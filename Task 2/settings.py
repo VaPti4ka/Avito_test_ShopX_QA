@@ -1,2 +1,2 @@
-login = "ABABABABAB"
-password = "skgbsingb4t45invs"
+login = "Ivakinvs@ya.ru"
+password = "qw159357VAD"
