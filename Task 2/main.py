@@ -23,10 +23,16 @@ class Page:
     def search_elem(self, locator):
         return self.driver.find_element(locator)
 
+    def press_elem(self, locator):
+        elem = self.search_elem(locator)
+        elem.click()
+        return elem
+
 
 class AvitoMainPage(Page):
-    LOGIN_ELEM = (By.XPATH, "//div/a[text()='Вход и регистрация']")
+    LOGIN_ELEM = (By.XPATH, "//a[text()='Вход и регистрация']")
     LOGIN_FIELD = (By.Name, "login")
+    LOGIN_BUTTON = (By.XPATH, "//button[@data-marker = 'login-form/submit']")
     PASSWORD_FIELD = (By.Name, "password")
 
     def __init__(self, driver=webdriver.Chrome):
@@ -38,12 +44,13 @@ class AvitoMainPage(Page):
         self.load_page(self.link)
 
     def log_in(self):
-        self.search_elem(self.LOGIN_ELEM).click()
+        self.press_elem(self.LOGIN_ELEM)
 
-        login_field = self.search_elem(self.LOGIN_FIELD)
-        login_field.click()
+        login_field = self.press_elem(self.LOGIN_ELEM)
         login_field.send_keys(settings.login)
 
-        pass_field = self.search_elem(self.PASSWORD_FIELD)
-        pass_field.click()
+        pass_field = self.press_elem(self.PASSWORD_FIELD)
         pass_field.send_keys(settings.password)
+
+        self.press_elem(self.LOGIN_BUTTON)
+
