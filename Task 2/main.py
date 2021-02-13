@@ -1,64 +1,49 @@
 import settings
 import pytest
 from selenium import webdriver
+from selenium.webdriver.common import By
 
 
-class PageParser:
+class Page:
 
     def __init__(self):
+        # Настройка использования профиля Chrome`a
         self.options = webdriver.ChromeOptions()
+        self.driver = self.setup_settings()
+
+        # self.test_page_url = r"https://www.avito.ru/sochi/lichnye_veschi?cd=1&d=1"
+
+    def setup_settings(self):
         self.options.add_argument(r"--user-data-dir=./Chrome_profile")
-        self.driver = webdriver.Chrome(options=self.options)
-        self.start_url = r"https://avito.ru"
-        self.test_page_url = r"https://www.avito.ru/sochi/lichnye_veschi?cd=1&d=1"
+        return webdriver.Chrome(options=self.options)
 
-    def start_browser(self):
-        # self.driver = webdriver.Chrome()
-        self.go_to_page(self.start_url)
+    def load_page(self, page_url):
+        self.driver.get(page_url)
 
-        self.log_in()
-        # Закрываем окно
-        # self.driver.quit()
+    def search_elem(self, locator):
+        return self.driver.find_element(locator)
 
-    def go_to_page(self, url):
-        self.driver.get(url)
+
+class AvitoMainPage(Page):
+    LOGIN_ELEM = (By.XPATH, "//div/a[text()='Вход и регистрация']")
+    LOGIN_FIELD = (By.Name, "login")
+    PASSWORD_FIELD = (By.Name, "password")
+
+    def __init__(self, driver=webdriver.Chrome):
+        super().__init__()
+        self.driver = driver
+        self.link = r"https://avito.ru"
+
+        # При создании инстанса класса сразу переходим на мейн страницу
+        self.load_page(self.link)
 
     def log_in(self):
-        # Ищем элемент для авторизации и переходим по нему
-        self.driver.find_element_by_class_name("header-services-menu-link-not-authenticated-3kAga").click()
+        self.search_elem(self.LOGIN_ELEM).click()
 
-        # Находим поле ввода логина, кликаем, вводим логин
-        log_field = self.driver.find_element_by_name("login")
-        log_field.click()
-        log_field.send_keys(settings.login)
+        login_field = self.search_elem(self.LOGIN_FIELD)
+        login_field.click()
+        login_field.send_keys(settings.login)
 
-        # Аналогичная операция для пароля
-        pass_field = self.driver.find_element_by_name("password")
+        pass_field = self.search_elem(self.PASSWORD_FIELD)
         pass_field.click()
         pass_field.send_keys(settings.password)
-
-        # Ищем и нажимаем кнопку авторизации
-        login_button = self.driver.find_element_by_class_name("auth-form-auth-form__submit-rSWaC")
-        login_button.click()
-
-
-# Использование учетной записи чтобы не надо было логиниться
-# # ********************************************************************************************************************
-# options = webdriver.ChromeOptions()
-# options.add_argument(r"--user-data-dir=./Task 2/Chrome_profile")
-# PATH = "/Users/yourPath/Desktop/chromedriver"
-# driver = webdriver.Chrome(PATH, options=options)
-# # ********************************************************************************************************************
-
-
-# Создаем экземляр класса парсера
-test_elem = PageParser()
-# Запускаем сессию браузера
-test_elem.start_browser()
-
-# TODO Добавить проверку на авторизацию на сайте
-# Логинимся
-test_elem.log_in()
-
-# Перешли на страницу с которой будем тестировать
-test_elem.go_to_page(test_elem.test_page_url)
