@@ -15,6 +15,9 @@ class Page:
     def search_elem(self, locator):
         return self.driver.find_element(*locator)
 
+    def get_page_url(self):
+        return self.driver.current_url
+
     def press_elem(self, locator):
         elem = self.driver.find_element(*locator)
         elem.click()
@@ -56,7 +59,7 @@ class AvitoMainPage(Page):
 
 
 class AvitoSearchPage(Page):
-    AD_ELEM = (By.XPATH, "//div/a[@data-marker='item-title'")
+    AD_ELEM = (By.XPATH, "//div/a[@data-marker='item-title']")
 
     def __init__(self, driver):
         super().__init__(driver)
@@ -71,7 +74,7 @@ class AvitoSearchPage(Page):
 
 
 class AvitoAdPage(Page):
-    PHONE_ELEM = ()
+    ORDERING_BUTTON_ELEM = (By.XPATH, "//button[@data-marker = 'delivery-item-button-main']")
 
     def __init__(self, driver, link):
         super().__init__(driver)
@@ -79,7 +82,16 @@ class AvitoAdPage(Page):
 
         self.load_page(self.link)
 
-    def check_phone_field(self):
-        # Нет интернета, не могу найти xpath поля телефона и метод, который позволит достать его содержимое(((
-        phone_field = self.search_elem(self.PHONE_ELEM)
-        return bool(phone_field.get_text_value)
+    def go_to_ordering_page(self):
+        self.press_elem(self.ORDERING_BUTTON_ELEM)
+
+
+class OrderingPage(Page):
+    PHONE_FIELD_ELEM = (By.XPATH, "//input[@data-marker = 'sd/order-widget-field/phone']")
+
+    def __init__(self, driver):
+        super().__init__(driver)
+
+    def get_content_phone_field(self):
+        phone_field = self.search_elem(self.PHONE_FIELD_ELEM)
+        return phone_field.get_attribute("value")
