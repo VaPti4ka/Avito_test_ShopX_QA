@@ -9,7 +9,6 @@ from parser_main import AvitoMainPage, AvitoSearchPage, AvitoAdPage, OrderingPag
 class Test_Parser:
     def __init__(self):
         self.driver = webdriver.Chrome()
-        # self.driver = self.setup_settings()
         # Даю время на загрузку страниц перед продолжением
         self.driver.implicitly_wait(5)
 
@@ -17,12 +16,6 @@ class Test_Parser:
         self.search_page = None
         self.ad_page = None
         self.ordering_page = None
-
-    @staticmethod
-    def setup_settings():
-        options = webdriver.ChromeOptions()
-        options.add_argument(r"--user-data-dir=./Chrome_profile")
-        return webdriver.Chrome(options)
 
     def test_main_page_loading(self):
         # Создаем инстанс авито мейн для (проверки) авторизации
@@ -39,7 +32,7 @@ class Test_Parser:
             self.main_page.log_in()
 
         # Проверяем наличие пункта ЛК в шапке - он есть только у авторизированного пользователя
-        assert WebDriverWait(self.driver, 60).\
+        assert WebDriverWait(self.driver, 60). \
             until(es.visibility_of_element_located((By.XPATH, "//a[@data-marker = 'header/username-button']"))), \
             "Авторизация не выполненна"
         print("PASSED:\t Авторизация")
@@ -75,7 +68,6 @@ class Test_Parser:
         print("PASSED:\t Загрузка страницы заказа " + url)
 
     def test_phone_field(self):
-
         # Получаем значения поля, в которое должен вводиться телефон
         phone_field_content = self.ordering_page.get_content_phone_field()
 
@@ -84,7 +76,6 @@ class Test_Parser:
 
 
 if __name__ == '__main__':
-
     case = Test_Parser()
 
     # Загружаем и тестируем подгрузку главной страницы Avito
