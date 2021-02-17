@@ -32,7 +32,7 @@ class AvitoMainPage(Page):
 
     def __init__(self, driver):
         super().__init__(driver)
-        self.link = r"https://avito.ru"
+        self.link = r"https://avito.ru/sochi"
 
         # При создании инстанса класса сразу переходим на мейн страницу
         self.load_page(self.link)
@@ -40,7 +40,7 @@ class AvitoMainPage(Page):
     def log_in(self):
         self.press_elem(self.LOGIN_ELEM)
 
-        login_field = self.press_elem(self.LOGIN_ELEM)
+        login_field = self.press_elem(self.LOGIN_FIELD)
         login_field.send_keys(settings.login)
 
         pass_field = self.press_elem(self.PASSWORD_FIELD)
@@ -54,7 +54,7 @@ class AvitoMainPage(Page):
         try:
             self.search_elem(self.LOGIN_ELEM)
             return 1
-        finally:
+        except:
             return 0
 
 
